@@ -7,6 +7,7 @@ import genreRoutes from './routes/genreRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import errorHandler from './middlewares/errorHandler.js';
+import authRouter from "./routes/authRoutes.js"
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/authors', authorRoutes);
 app.use('/api/genres', genreRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/auth', authRouter);
 
 app.use(errorHandler);
 

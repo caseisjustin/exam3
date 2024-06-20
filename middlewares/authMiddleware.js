@@ -7,6 +7,7 @@ const authMiddleware = (roles = []) => (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, jwtConfig.secret);
+    console.log(roles.includes(decoded.role), decoded)
     if (roles.length && !roles.includes(decoded.role)) {
       return res.status(403).json({ message: 'Access denied, insufficient permissions' });
     }

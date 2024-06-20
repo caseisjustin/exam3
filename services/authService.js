@@ -1,4 +1,5 @@
 import User from '../models/user.js';
+import OtpModel from "../models/otp.js"
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,7 +7,7 @@ import sendOtp from '../utils/sendOtp.js';
 import jwtConfig from '../config/jwt.js';
 
 const signup = async (userData) => {
-  const { email, username, password, role, firstName, lastName, phoneNumber, address } = userData;
+  const { email, username, password, role, first_name, last_name, phone_number, address } = userData;
 
   // Check if user already exists
   const existingUser = await User.findByEmail(email);
@@ -24,24 +25,24 @@ const signup = async (userData) => {
     username,
     password: hashedPassword,
     role,
-    firstName,
-    lastName,
-    phoneNumber,
+    first_name,
+    last_name,
+    phone_number,
     address,
     status: 'inactive',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    created_at: new Date(),
+    updated_at: new Date(),
   };
-
   // Save user to database
   const [createdUser] = await User.create(newUser);
+  console.log("ok")
 
   // Generate OTP and send it to user's email
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   await sendOtp(email, otp);
 
   // Save OTP in database (implement OTP model and save logic)
-  await OtpModel.create({ userId: createdUser.id, otp, createdAt: new Date() });
+  await OtpModel.create({ user_id: createdUser.id, otp, created_at: new Date() });
 
   return { userId: createdUser.id, otpSent: true };
 };
@@ -67,11 +68,11 @@ const signin = async (email, password) => {
   if (!user || !await bcrypt.compare(password, user.password)) {
     throw new Error('Invalid email or password');
   }
-
   if (user.status !== 'active') {
     throw new Error('Account is not active');
   }
-
+  
+  console.log(jwtConfig)
   const accessToken = jwt.sign({ id: user.id, role: user.role }, jwtConfig.secret, { expiresIn: '1h' });
   const refreshToken = jwt.sign({ id: user.id, role: user.role }, jwtConfig.secret, { expiresIn: '7d' });
 

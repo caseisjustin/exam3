@@ -11,7 +11,7 @@ const signup = async (req, res, next) => {
 
 const verifyOtp = async (req, res, next) => {
   try {
-    const result = await authService.verifyOtp(req.body.userId, req.body.otp);
+    const result = await authService.verifyOtp(req.body.user_id, req.body.otp);
     res.status(200).json(result);
   } catch (error) {
     next(error);
