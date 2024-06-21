@@ -46,7 +46,6 @@ const createUser = async (req, res, next) => {
       created_at: new Date(),
       updated_at: new Date(),
     };
-    console.log("ok")
     const newUser = await userService.createUser(newUserCreate);
     res.status(201).json(newUser);
   } catch (error) {
